@@ -5,12 +5,15 @@ import com.SoftwareOrdersUberEats.authService.exception.auth.AuthEmailAlreadyInU
 import com.SoftwareOrdersUberEats.authService.exception.auth.AuthNotFoundException;
 import com.SoftwareOrdersUberEats.authService.exception.auth.AuthUsernameAlreadyInUseException;
 import com.SoftwareOrdersUberEats.authService.exception.auth.PasswordDoNotMatchException;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
+@Order(1)
 public class AuthExceptionHandler {
 
     private ResponseEntity<DtoResponseApiWithoutData> buildResponse(HttpStatus status, String message) {
@@ -39,5 +42,10 @@ public class AuthExceptionHandler {
     @ExceptionHandler(PasswordDoNotMatchException.class)
     public ResponseEntity<DtoResponseApiWithoutData> handleAuthPasswordDoNotMatch(PasswordDoNotMatchException ex){
         return buildResponse(HttpStatus.BAD_REQUEST, "Passwords do not match");
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<DtoResponseApiWithoutData> badCredentialsException(BadCredentialsException ex){
+        return buildResponse(HttpStatus.UNAUTHORIZED, "Bad credentials");
     }
 }
