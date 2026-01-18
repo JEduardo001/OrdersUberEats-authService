@@ -1,6 +1,7 @@
 package com.SoftwareOrdersUberEats.authService.service;
 
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoAuth;
+import com.SoftwareOrdersUberEats.authService.dto.auth.DtoLogin;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoUpdateAuth;
 import com.SoftwareOrdersUberEats.authService.dto.user.DtoCreateUser;
 import com.SoftwareOrdersUberEats.authService.entity.AuthEntity;
@@ -14,11 +15,13 @@ import com.SoftwareOrdersUberEats.authService.interfaces.AuthInterface;
 import com.SoftwareOrdersUberEats.authService.mapper.AuthMapper;
 import com.SoftwareOrdersUberEats.authService.repository.AuthRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -28,6 +31,11 @@ public class AuthService implements AuthInterface {
     private final AuthRepository authRepository;
     private final AuthMapper authMapper;
     private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
+
+    public Optional<AuthEntity> getByUsername(String username){
+        return authRepository.findByUsername(username);
+    }
 
     @Override
     public DtoAuth get(UUID id){
@@ -51,8 +59,10 @@ public class AuthService implements AuthInterface {
 
         AuthEntity authEntity = authMapper.toEntity(request);
         authEntity.setCreatedAt(Instant.now());
+        authEntity.setPassword(passwordEncoder.encode(request.getPassword()));
         authEntity.setStatus(StatusResourceAuth.PENDING_TO_CREATE);
         authEntity.setRoles(new ArrayList<>());
+
         return authMapper.toDto(authRepository.save(authEntity));
         //lanzar evento
     }
@@ -74,7 +84,6 @@ public class AuthService implements AuthInterface {
         authEntity.setRoles(roles);
 
         return authMapper.toDto(authRepository.save(authEntity));
-
     }
 
 }

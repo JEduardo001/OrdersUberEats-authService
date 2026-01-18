@@ -1,9 +1,7 @@
 package com.SoftwareOrdersUberEats.authService.exception.exceptionHandler;
 
 import com.SoftwareOrdersUberEats.authService.dto.apiResponse.DtoResponseApiWithoutData;
-import com.SoftwareOrdersUberEats.authService.exception.auth.AuthEmailAlreadyInUseException;
-import com.SoftwareOrdersUberEats.authService.exception.auth.AuthNotFoundException;
-import com.SoftwareOrdersUberEats.authService.exception.auth.AuthUsernameAlreadyInUseException;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
+@Order(3)
 public class GeneralExceptionHandler {
 
     private ResponseEntity<DtoResponseApiWithoutData> buildResponse(HttpStatus status, String message) {
