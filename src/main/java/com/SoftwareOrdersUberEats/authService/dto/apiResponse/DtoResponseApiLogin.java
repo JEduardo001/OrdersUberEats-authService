@@ -1,4 +1,4 @@
-package com.SoftwareOrdersUberEats.authService.dto;
+package com.SoftwareOrdersUberEats.authService.dto.apiResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
