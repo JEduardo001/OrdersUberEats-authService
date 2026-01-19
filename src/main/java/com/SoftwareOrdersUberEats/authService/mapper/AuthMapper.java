@@ -1,6 +1,7 @@
 package com.SoftwareOrdersUberEats.authService.mapper;
 
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoAuth;
+import com.SoftwareOrdersUberEats.authService.dto.auth.DtoAuthSecurity;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoUpdateAuth;
 import com.SoftwareOrdersUberEats.authService.dto.user.DtoCreateUser;
 import com.SoftwareOrdersUberEats.authService.entity.AuthEntity;
@@ -16,5 +17,5 @@ public interface AuthMapper {
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "id", ignore = true)
     void updateEntityFromDto(DtoUpdateAuth dto, @MappingTarget AuthEntity entity);
-
+    DtoAuthSecurity toDtoSecurity(AuthEntity auth);
 }

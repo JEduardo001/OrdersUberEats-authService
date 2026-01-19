@@ -8,10 +8,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface RoleMapper {
     DtoRole toDto(RoleEntity role);
     RoleEntity toEntityFromCreateDto(DtoCreateRole request);
     @Mapping(target = "id", ignore = true)
     void updateRoleFromDto(DtoUpdateRole newRole, @MappingTarget RoleEntity actualRole);
+    List<RoleEntity> mapDtosToEntities(List<DtoRole> role);
 }

@@ -27,10 +27,11 @@ public class RoleService implements RoleInterface {
     private final RoleMapper roleMapper;
     private final RoleRepository roleRepository;
 
-    public RoleEntity getRoleEntity(Long id){
+    private RoleEntity getRoleEntity(Long id){
         return roleRepository.findById(id).orElseThrow(RoleNotFoundException::new);
     }
 
+    @Override
     public DtoPageableResponse<DtoRole> getAllRoles(int page, int size){
         Page<RoleEntity> roles = roleRepository.findAll(PageRequest.of(page,size));
         List<DtoRole> dtoRoles = roles.getContent().stream().map(roleMapper::toDto).collect(Collectors.toList());
@@ -43,8 +44,9 @@ public class RoleService implements RoleInterface {
     }
 
     @Override
-    public List<RoleEntity> getAllRolesById(List<Long> idRoles){
-        return roleRepository.findAllById(idRoles);
+    public List<DtoRole> getAllRolesById(List<Long> idRoles){
+        return roleRepository.findAllById(idRoles).stream().map(roleMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override

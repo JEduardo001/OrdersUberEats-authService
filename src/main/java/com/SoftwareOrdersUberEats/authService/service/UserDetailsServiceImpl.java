@@ -1,7 +1,8 @@
 package com.SoftwareOrdersUberEats.authService.service;
 
-import com.SoftwareOrdersUberEats.authService.entity.AuthEntity;
-import com.SoftwareOrdersUberEats.authService.entity.RoleEntity;
+import com.SoftwareOrdersUberEats.authService.dto.auth.DtoAuthSecurity;
+import com.SoftwareOrdersUberEats.authService.dto.role.DtoRole;
+
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.User;
@@ -10,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -20,19 +20,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username){
-        Optional<AuthEntity> auth = authService.getByUsername(username);
+        DtoAuthSecurity auth = authService.getByUsername(username);
 
-        if(auth.isEmpty()){
+        if(auth.getUsername() == null){
             throw new BadCredentialsException("Bad credentials");
         }
 
-        List<String> rolesList = auth.get().getRoles().stream()
-                .map(RoleEntity::getName)
+        List<String> rolesList = auth.getRoles().stream()
+                .map(DtoRole::name)
                 .toList();
 
         return User.builder()
                 .username(username)
-                .password(auth.get().getPassword())
+                .password(auth.getPassword())
                 .roles(rolesList.toArray(new String[0]))
                 .build();
     }

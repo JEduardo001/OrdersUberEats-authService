@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,12 +14,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class DtoAuth {
+public class DtoAuthSecurity {
     private UUID id;
     private String username;
     private String email;
+    private String password;
     private StatusResourceAuth status;
     private List<DtoRole> roles;
-    private Instant createdAt;
-    private Instant disableAt;
 }

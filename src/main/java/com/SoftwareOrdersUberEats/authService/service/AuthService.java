@@ -1,8 +1,10 @@
 package com.SoftwareOrdersUberEats.authService.service;
 
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoAuth;
+import com.SoftwareOrdersUberEats.authService.dto.auth.DtoAuthSecurity;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoLogin;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoUpdateAuth;
+import com.SoftwareOrdersUberEats.authService.dto.role.DtoRole;
 import com.SoftwareOrdersUberEats.authService.dto.user.DtoCreateUser;
 import com.SoftwareOrdersUberEats.authService.entity.AuthEntity;
 import com.SoftwareOrdersUberEats.authService.entity.RoleEntity;
@@ -12,7 +14,9 @@ import com.SoftwareOrdersUberEats.authService.exception.auth.AuthNotFoundExcepti
 import com.SoftwareOrdersUberEats.authService.exception.auth.AuthUsernameAlreadyInUseException;
 import com.SoftwareOrdersUberEats.authService.exception.auth.PasswordDoNotMatchException;
 import com.SoftwareOrdersUberEats.authService.interfaces.AuthInterface;
+import com.SoftwareOrdersUberEats.authService.interfaces.RoleInterface;
 import com.SoftwareOrdersUberEats.authService.mapper.AuthMapper;
+import com.SoftwareOrdersUberEats.authService.mapper.RoleMapper;
 import com.SoftwareOrdersUberEats.authService.repository.AuthRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,11 +34,19 @@ public class AuthService implements AuthInterface {
 
     private final AuthRepository authRepository;
     private final AuthMapper authMapper;
-    private final RoleService roleService;
+    private final RoleMapper roleMapper;
+    private final RoleInterface iRoleService;
     private final PasswordEncoder passwordEncoder;
 
-    public Optional<AuthEntity> getByUsername(String username){
-        return authRepository.findByUsername(username);
+    @Override
+    public DtoAuthSecurity getByUsername(String username){
+        Optional<AuthEntity> auth = authRepository.findByUsername(username);
+        if(auth.isEmpty()){
+            return DtoAuthSecurity.builder()
+                    .username(null)
+                    .build();
+        }
+        return authMapper.toDtoSecurity(auth.get());
     }
 
     @Override
@@ -79,9 +91,12 @@ public class AuthService implements AuthInterface {
             throw new AuthEmailAlreadyInUseException();
         }
 
-        List<RoleEntity> roles = roleService.getAllRolesById(request.getRoles());
+        List<DtoRole> rolesDto = iRoleService.getAllRolesById(request.getRoles());
+
         authMapper.updateEntityFromDto(request, authEntity);
-        authEntity.setRoles(roles);
+
+        List<RoleEntity> rolesEntities = roleMapper.mapDtosToEntities(rolesDto);
+        authEntity.setRoles(rolesEntities);
 
         return authMapper.toDto(authRepository.save(authEntity));
     }
