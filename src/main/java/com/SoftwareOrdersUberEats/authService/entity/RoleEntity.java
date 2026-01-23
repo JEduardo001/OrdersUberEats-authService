@@ -1,6 +1,6 @@
 package com.SoftwareOrdersUberEats.authService.entity;
 
-import com.SoftwareOrdersUberEats.authService.enums.StatusResourceRole;
+import com.SoftwareOrdersUberEats.authService.enums.statesResource.StatusResourceRoleEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +21,7 @@ public class RoleEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private StatusResourceRole status;
+    private StatusResourceRoleEnum status;
     private Instant createdAt;
     private Instant disableAt;
 }

@@ -1,7 +1,7 @@
 package com.SoftwareOrdersUberEats.authService.dto.auth;
 
 import com.SoftwareOrdersUberEats.authService.dto.role.DtoRole;
-import com.SoftwareOrdersUberEats.authService.enums.StatusResourceAuth;
+import com.SoftwareOrdersUberEats.authService.enums.statesResource.StatusResourceAuthEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +19,7 @@ public class DtoAuth {
     private UUID id;
     private String username;
     private String email;
-    private StatusResourceAuth status;
+    private StatusResourceAuthEnum status;
     private List<DtoRole> roles;
     private Instant createdAt;
     private Instant disableAt;

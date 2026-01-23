@@ -3,9 +3,9 @@ package com.SoftwareOrdersUberEats.authService.mapper;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoAuth;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoAuthSecurity;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoUpdateAuth;
+import com.SoftwareOrdersUberEats.authService.dto.events.DtoCreateUserEvent;
 import com.SoftwareOrdersUberEats.authService.dto.user.DtoCreateUser;
 import com.SoftwareOrdersUberEats.authService.entity.AuthEntity;
-import com.SoftwareOrdersUberEats.authService.enums.StatusResourceAuth;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -18,4 +18,5 @@ public interface AuthMapper {
     @Mapping(target = "id", ignore = true)
     void updateEntityFromDto(DtoUpdateAuth dto, @MappingTarget AuthEntity entity);
     DtoAuthSecurity toDtoSecurity(AuthEntity auth);
+    DtoCreateUserEvent toDtoCreateUserEvent(DtoCreateUser request);
 }

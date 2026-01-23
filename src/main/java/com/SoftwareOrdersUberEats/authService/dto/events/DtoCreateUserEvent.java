@@ -1,5 +1,8 @@
-package com.SoftwareOrdersUberEats.authService.dto.user;
+package com.SoftwareOrdersUberEats.authService.dto.events;
 
+import com.SoftwareOrdersUberEats.authService.enums.statesResource.StatusResourceAuthEnum;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -10,26 +13,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class DtoCreateUser {
+public class DtoCreateUserEvent {
     //auth data
-    @NotEmpty
-    private String username;
-    @Email
-    private String email;
-    @NotEmpty
-    @Pattern(
-            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&.#_\\-]).{8,35}$", // 1 upperCase, 1 lower case, 1 number 1 symbol
-            message = "Password must contain upper, lower, number and special character"
-
-    )
-    private String password;
-    @NotEmpty
-    private String confirmPassword;
+    @NotNull
+    private UUID id;
 
     //user data
     @NotEmpty
@@ -46,4 +39,7 @@ public class DtoCreateUser {
     private Double latitude;
     @NotNull
     private Double longitude;
+    @Enumerated(EnumType.STRING)
+    private StatusResourceAuthEnum status;
+
 }

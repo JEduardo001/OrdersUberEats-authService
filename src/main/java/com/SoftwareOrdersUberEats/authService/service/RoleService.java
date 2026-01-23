@@ -5,7 +5,7 @@ import com.SoftwareOrdersUberEats.authService.dto.role.DtoCreateRole;
 import com.SoftwareOrdersUberEats.authService.dto.role.DtoRole;
 import com.SoftwareOrdersUberEats.authService.dto.role.DtoUpdateRole;
 import com.SoftwareOrdersUberEats.authService.entity.RoleEntity;
-import com.SoftwareOrdersUberEats.authService.enums.StatusResourceRole;
+import com.SoftwareOrdersUberEats.authService.enums.statesResource.StatusResourceRoleEnum;
 import com.SoftwareOrdersUberEats.authService.exception.role.RoleNameAlreadyInUseException;
 import com.SoftwareOrdersUberEats.authService.exception.role.RoleNotFoundException;
 import com.SoftwareOrdersUberEats.authService.interfaces.RoleInterface;
@@ -62,7 +62,7 @@ public class RoleService implements RoleInterface {
         }
         RoleEntity role = roleMapper.toEntityFromCreateDto(request);
         role.setCreatedAt(Instant.now());
-        role.setDisableAt( request.status().equals(StatusResourceRole.DELETE) ? Instant.now() : null);
+        role.setDisableAt( request.status().equals(StatusResourceRoleEnum.DELETE) ? Instant.now() : null);
 
         return roleMapper.toDto(roleRepository.save(role));
     }
@@ -76,7 +76,7 @@ public class RoleService implements RoleInterface {
         }
 
         roleMapper.updateRoleFromDto(request,role);
-        role.setDisableAt( role.getStatus().equals(StatusResourceRole.DELETE) ? Instant.now() : null);
+        role.setDisableAt( role.getStatus().equals(StatusResourceRoleEnum.DELETE) ? Instant.now() : null);
 
         return roleMapper.toDto(roleRepository.save(role));
     }
