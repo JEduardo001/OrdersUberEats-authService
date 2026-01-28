@@ -5,6 +5,7 @@ import com.SoftwareOrdersUberEats.authService.dto.auth.DtoAuthSecurity;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoUpdateAuth;
 import com.SoftwareOrdersUberEats.authService.dto.events.DtoCreateUserEvent;
 import com.SoftwareOrdersUberEats.authService.dto.events.DtoEvent;
+import com.SoftwareOrdersUberEats.authService.dto.order.DtoCreateOrder;
 import com.SoftwareOrdersUberEats.authService.dto.role.DtoRole;
 import com.SoftwareOrdersUberEats.authService.dto.user.DtoCreateUser;
 import com.SoftwareOrdersUberEats.authService.entity.AuthEntity;
@@ -87,6 +88,7 @@ public class AuthService implements AuthInterface {
         //save event
         DtoEvent<Object> event = DtoEvent.builder()
                 .data(dataToCreateUser)
+                .idEvent(UUID.randomUUID())
                 .resultEvent(ResultEventEnum.CREATED)
                 .typeEvent(TypeEventEnum.CREATE).build();
 
@@ -116,7 +118,7 @@ public class AuthService implements AuthInterface {
 
         return authMapper.toDto(authRepository.save(authEntity));
     }
-
+    @Override
     public void changeStatusUser(DtoCreateUserEvent data, ResultEventEnum status){
         AuthEntity auth = authRepository.findById(data.getId()).orElseThrow(AuthNotFoundException::new);
 
@@ -129,5 +131,18 @@ public class AuthService implements AuthInterface {
 
         }
         authRepository.save(auth);
+    }
+
+    @Override
+    public void verifyUserToCreateOrder(DtoCreateOrder request){
+        authRepository.findById(request.getIdUser()).orElseThrow(AuthNotFoundException::new);
+
+        DtoEvent<Object> event = DtoEvent.builder()
+                .data(request)
+                .idEvent(UUID.randomUUID())
+                .resultEvent(ResultEventEnum.CREATED)
+                .typeEvent(TypeEventEnum.CREATE).build();
+
+        outboxEventService.saveEvent(event, "order.requested");
     }
 }

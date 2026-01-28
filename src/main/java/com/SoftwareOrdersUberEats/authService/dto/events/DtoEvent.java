@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -14,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class DtoEvent<T> {
     private TypeEventEnum typeEvent;
     private ResultEventEnum resultEvent;
+    private UUID idEvent;
     private T data;
 }
 

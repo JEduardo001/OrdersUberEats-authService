@@ -1,9 +1,8 @@
 package com.SoftwareOrdersUberEats.authService.kafka.consumer;
 
-
 import com.SoftwareOrdersUberEats.authService.dto.events.DtoCreateUserEvent;
 import com.SoftwareOrdersUberEats.authService.dto.events.DtoEvent;
-import com.SoftwareOrdersUberEats.authService.dto.user.DtoCreateUser;
+import com.SoftwareOrdersUberEats.authService.interfaces.IConsumer;
 import com.SoftwareOrdersUberEats.authService.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -13,15 +12,15 @@ import tools.jackson.databind.ObjectMapper;
 
 @Service
 @AllArgsConstructor
-public class Consumer {
+public class Consumer implements IConsumer {
 
     private final AuthService authService;
     private final ObjectMapper objectMapper;
 
-
     @KafkaListener(
             topics = "creating.user.response",
             groupId = "users"    )
+    @Override
     public void responseCreateUser(String rawEvent) {
 
         String json = rawEvent;
