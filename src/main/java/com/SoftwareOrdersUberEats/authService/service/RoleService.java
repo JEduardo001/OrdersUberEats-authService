@@ -8,7 +8,7 @@ import com.SoftwareOrdersUberEats.authService.entity.RoleEntity;
 import com.SoftwareOrdersUberEats.authService.enums.statesResource.StatusResourceRoleEnum;
 import com.SoftwareOrdersUberEats.authService.exception.role.RoleNameAlreadyInUseException;
 import com.SoftwareOrdersUberEats.authService.exception.role.RoleNotFoundException;
-import com.SoftwareOrdersUberEats.authService.interfaces.RoleInterface;
+import com.SoftwareOrdersUberEats.authService.interfaces.IRole;
 import com.SoftwareOrdersUberEats.authService.mapper.RoleMapper;
 import com.SoftwareOrdersUberEats.authService.repository.RoleRepository;
 import lombok.AllArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class RoleService implements RoleInterface {
+public class RoleService implements IRole {
 
     private final RoleMapper roleMapper;
     private final RoleRepository roleRepository;
@@ -76,7 +76,7 @@ public class RoleService implements RoleInterface {
         }
 
         roleMapper.updateRoleFromDto(request,role);
-        role.setDisableAt( role.getStatus().equals(StatusResourceRoleEnum.DELETE) ? Instant.now() : null);
+        role.setDisableAt( role.getStatus().equals(StatusResourceRoleEnum.DISABLED) ? Instant.now() : null);
 
         return roleMapper.toDto(roleRepository.save(role));
     }

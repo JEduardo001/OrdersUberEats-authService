@@ -1,5 +1,6 @@
 package com.SoftwareOrdersUberEats.authService.service;
 
+import com.SoftwareOrdersUberEats.authService.dto.apiResponse.DtoPageableResponse;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoAuth;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoAuthSecurity;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoUpdateAuth;
@@ -17,12 +18,14 @@ import com.SoftwareOrdersUberEats.authService.exception.auth.AuthEmailAlreadyInU
 import com.SoftwareOrdersUberEats.authService.exception.auth.AuthNotFoundException;
 import com.SoftwareOrdersUberEats.authService.exception.auth.AuthUsernameAlreadyInUseException;
 import com.SoftwareOrdersUberEats.authService.exception.auth.PasswordDoNotMatchException;
-import com.SoftwareOrdersUberEats.authService.interfaces.AuthInterface;
-import com.SoftwareOrdersUberEats.authService.interfaces.RoleInterface;
+import com.SoftwareOrdersUberEats.authService.interfaces.IAuth;
+import com.SoftwareOrdersUberEats.authService.interfaces.IRole;
 import com.SoftwareOrdersUberEats.authService.mapper.AuthMapper;
 import com.SoftwareOrdersUberEats.authService.mapper.RoleMapper;
 import com.SoftwareOrdersUberEats.authService.repository.AuthRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,18 +34,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class AuthService implements AuthInterface {
+public class AuthService implements IAuth {
 
     private final AuthRepository authRepository;
     private final AuthMapper authMapper;
     private final RoleMapper roleMapper;
-    private final RoleInterface iRoleService;
+    private final IRole iRoleService;
     private final PasswordEncoder passwordEncoder;
     private final OutboxEventService outboxEventService;
 
+
+    @Override
+    public DtoPageableResponse getAllAuths(int page, int size){
+        Page<AuthEntity> pageAuth = authRepository.findAll(PageRequest.of(page,size));
+        List<DtoAuth> listAuths = pageAuth.get().map(authMapper::toDto).collect(Collectors.toList());
+
+        return new DtoPageableResponse<>(
+                pageAuth.getTotalElements(),
+                pageAuth.getTotalPages(),
+                listAuths
+        );
+    }
     @Override
     public DtoAuthSecurity getByUsername(String username){
         Optional<AuthEntity> auth = authRepository.findByUsername(username);
@@ -112,6 +128,8 @@ public class AuthService implements AuthInterface {
         List<DtoRole> rolesDto = iRoleService.getAllRolesById(request.getRoles());
 
         authMapper.updateEntityFromDto(request, authEntity);
+
+        authEntity.setDisableAt(request.getStatus().equals(StatusResourceAuthEnum.DISABLE) ? Instant.now() : null);
 
         List<RoleEntity> rolesEntities = roleMapper.mapDtosToEntities(rolesDto);
         authEntity.setRoles(rolesEntities);

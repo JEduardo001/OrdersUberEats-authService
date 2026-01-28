@@ -1,5 +1,6 @@
 package com.SoftwareOrdersUberEats.authService.interfaces;
 
+import com.SoftwareOrdersUberEats.authService.dto.apiResponse.DtoPageableResponse;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoAuth;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoAuthSecurity;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoUpdateAuth;
@@ -11,7 +12,7 @@ import jakarta.transaction.Transactional;
 
 import java.util.UUID;
 
-public interface AuthInterface {
+public interface IAuth {
     @Transactional
     DtoAuth create(DtoCreateUser request);
     DtoAuth get(UUID id);
@@ -20,4 +21,5 @@ public interface AuthInterface {
     DtoAuthSecurity getByUsername(String username);
     void changeStatusUser(DtoCreateUserEvent data, ResultEventEnum status);
     void verifyUserToCreateOrder(DtoCreateOrder request);
+    DtoPageableResponse getAllAuths(int page, int size);
 }

@@ -54,6 +54,17 @@ public class AuthController {
         );
     }
 
+    @GetMapping()
+    public ResponseEntity<DtoResponseApi> getAllAuths(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        return ResponseEntity.ok(
+                DtoResponseApi.builder()
+                        .status(HttpStatus.OK.value())
+                        .message("Auths obtained")
+                        .data(authService.getAllAuths(page, size))
+                        .build()
+        );
+    }
+
     @GetMapping("/{idAuth}")
     public ResponseEntity<DtoResponseApi> getAuth(@PathVariable UUID idAuth){
         return ResponseEntity.status(HttpStatus.OK).body(DtoResponseApi.builder()
