@@ -2,13 +2,17 @@ package com.SoftwareOrdersUberEats.authService.service;
 
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoAuth;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoAuthSecurity;
-import com.SoftwareOrdersUberEats.authService.dto.auth.DtoLogin;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoUpdateAuth;
+import com.SoftwareOrdersUberEats.authService.dto.events.DtoCreateUserEvent;
+import com.SoftwareOrdersUberEats.authService.dto.events.DtoEvent;
+import com.SoftwareOrdersUberEats.authService.dto.order.DtoCreateOrder;
 import com.SoftwareOrdersUberEats.authService.dto.role.DtoRole;
 import com.SoftwareOrdersUberEats.authService.dto.user.DtoCreateUser;
 import com.SoftwareOrdersUberEats.authService.entity.AuthEntity;
 import com.SoftwareOrdersUberEats.authService.entity.RoleEntity;
-import com.SoftwareOrdersUberEats.authService.enums.StatusResourceAuth;
+import com.SoftwareOrdersUberEats.authService.enums.statesCreateResource.ResultEventEnum;
+import com.SoftwareOrdersUberEats.authService.enums.statesResource.StatusResourceAuthEnum;
+import com.SoftwareOrdersUberEats.authService.enums.typeEvents.TypeEventEnum;
 import com.SoftwareOrdersUberEats.authService.exception.auth.AuthEmailAlreadyInUseException;
 import com.SoftwareOrdersUberEats.authService.exception.auth.AuthNotFoundException;
 import com.SoftwareOrdersUberEats.authService.exception.auth.AuthUsernameAlreadyInUseException;
@@ -37,6 +41,7 @@ public class AuthService implements AuthInterface {
     private final RoleMapper roleMapper;
     private final RoleInterface iRoleService;
     private final PasswordEncoder passwordEncoder;
+    private final OutboxEventService outboxEventService;
 
     @Override
     public DtoAuthSecurity getByUsername(String username){
@@ -72,11 +77,24 @@ public class AuthService implements AuthInterface {
         AuthEntity authEntity = authMapper.toEntity(request);
         authEntity.setCreatedAt(Instant.now());
         authEntity.setPassword(passwordEncoder.encode(request.getPassword()));
-        authEntity.setStatus(StatusResourceAuth.PENDING_TO_CREATE);
+        authEntity.setStatus(StatusResourceAuthEnum.PENDING_TO_CREATE);
         authEntity.setRoles(new ArrayList<>());
 
-        return authMapper.toDto(authRepository.save(authEntity));
-        //lanzar evento
+        authRepository.save(authEntity);
+
+        DtoCreateUserEvent dataToCreateUser = authMapper.toDtoCreateUserEvent(request);
+        dataToCreateUser.setId(authEntity.getId());
+
+        //save event
+        DtoEvent<Object> event = DtoEvent.builder()
+                .data(dataToCreateUser)
+                .idEvent(UUID.randomUUID())
+                .resultEvent(ResultEventEnum.CREATED)
+                .typeEvent(TypeEventEnum.CREATE).build();
+
+        outboxEventService.saveEvent(event, "creating.user");
+
+        return authMapper.toDto(authEntity);
     }
 
     @Override
@@ -100,5 +118,31 @@ public class AuthService implements AuthInterface {
 
         return authMapper.toDto(authRepository.save(authEntity));
     }
+    @Override
+    public void changeStatusUser(DtoCreateUserEvent data, ResultEventEnum status){
+        AuthEntity auth = authRepository.findById(data.getId()).orElseThrow(AuthNotFoundException::new);
 
+        if(status.equals(ResultEventEnum.VALIDATION_ERROR)){
+            auth.setStatus(StatusResourceAuthEnum.VALIDATION_ERROR);
+        }
+
+        if(status.equals(ResultEventEnum.CREATED)){
+            auth.setStatus(StatusResourceAuthEnum.ACTIVE);
+
+        }
+        authRepository.save(auth);
+    }
+
+    @Override
+    public void verifyUserToCreateOrder(DtoCreateOrder request){
+        authRepository.findById(request.getIdUser()).orElseThrow(AuthNotFoundException::new);
+
+        DtoEvent<Object> event = DtoEvent.builder()
+                .data(request)
+                .idEvent(UUID.randomUUID())
+                .resultEvent(ResultEventEnum.CREATED)
+                .typeEvent(TypeEventEnum.CREATE).build();
+
+        outboxEventService.saveEvent(event, "order.requested");
+    }
 }

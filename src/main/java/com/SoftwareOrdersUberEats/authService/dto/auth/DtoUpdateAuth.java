@@ -1,7 +1,6 @@
 package com.SoftwareOrdersUberEats.authService.dto.auth;
 
-import com.SoftwareOrdersUberEats.authService.dto.role.DtoRole;
-import com.SoftwareOrdersUberEats.authService.enums.StatusResourceAuth;
+import com.SoftwareOrdersUberEats.authService.enums.statesResource.StatusResourceAuthEnum;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
@@ -24,7 +23,7 @@ public class DtoUpdateAuth {
     @Email
     private String email;
     @NotNull
-    private StatusResourceAuth status;
+    private StatusResourceAuthEnum status;
     @NotNull
     private List<Long> roles;
 }

@@ -3,8 +3,10 @@ package com.SoftwareOrdersUberEats.authService.controller;
 import com.SoftwareOrdersUberEats.authService.constant.ApiBase;
 import com.SoftwareOrdersUberEats.authService.dto.apiResponse.DtoResponseApi;
 import com.SoftwareOrdersUberEats.authService.dto.apiResponse.DtoResponseApiLogin;
+import com.SoftwareOrdersUberEats.authService.dto.apiResponse.DtoResponseApiWithoutData;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoLogin;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoUpdateAuth;
+import com.SoftwareOrdersUberEats.authService.dto.order.DtoCreateOrder;
 import com.SoftwareOrdersUberEats.authService.dto.user.DtoCreateUser;
 import com.SoftwareOrdersUberEats.authService.security.jwt.JwtService;
 import com.SoftwareOrdersUberEats.authService.service.AuthService;
@@ -67,6 +69,16 @@ public class AuthController {
                 .status(HttpStatus.OK.value())
                 .message("Auth updated")
                 .data(authService.update(idAuth,request)).build()
+        );
+    }
+
+    @PostMapping("/order")
+    public ResponseEntity<DtoResponseApiWithoutData> verifyAuthToCreateOrder(@Valid @RequestBody DtoCreateOrder request){
+        authService.verifyUserToCreateOrder(request);
+        return ResponseEntity.status(HttpStatus.OK).body(DtoResponseApiWithoutData.builder()
+                .status(HttpStatus.OK.value())
+                .message("Order pending to create")
+                .build()
         );
     }
 }

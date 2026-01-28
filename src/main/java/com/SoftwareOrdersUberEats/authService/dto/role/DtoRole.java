@@ -1,13 +1,13 @@
 package com.SoftwareOrdersUberEats.authService.dto.role;
 
-import com.SoftwareOrdersUberEats.authService.enums.StatusResourceRole;
+import com.SoftwareOrdersUberEats.authService.enums.statesResource.StatusResourceRoleEnum;
 
 import java.time.Instant;
 
 public record DtoRole(
         Long id,
         String name,
-        StatusResourceRole status,
+        StatusResourceRoleEnum status,
         Instant createdAt,
         Instant disableAt
 ) {

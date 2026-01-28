@@ -1,6 +1,6 @@
 package com.SoftwareOrdersUberEats.authService.entity;
 
-import com.SoftwareOrdersUberEats.authService.enums.StatusResourceAuth;
+import com.SoftwareOrdersUberEats.authService.enums.statesResource.StatusResourceAuthEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,8 +30,9 @@ public class AuthEntity {
     private String username;
     private String email;
     private String password;
-    private StatusResourceAuth status;
-    @ManyToMany
+    @Enumerated(EnumType.STRING)
+    private StatusResourceAuthEnum status;
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "roles_auth",
             joinColumns = @JoinColumn(name = "id_auth"),
