@@ -6,9 +6,12 @@ import com.SoftwareOrdersUberEats.authService.interfaces.IConsumer;
 import com.SoftwareOrdersUberEats.authService.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
+
+import static com.SoftwareOrdersUberEats.authService.constant.TracerConstants.CORRELATION_HEADER;
 
 @Service
 @AllArgsConstructor
@@ -21,7 +24,7 @@ public class Consumer implements IConsumer {
             topics = "creating.user.response",
             groupId = "users"    )
     @Override
-    public void responseCreateUser(String rawEvent) {
+    public void responseCreateUser(String rawEvent,@Header(CORRELATION_HEADER) String correlationId) {
 
         String json = rawEvent;
         if (rawEvent.startsWith("\"") && rawEvent.endsWith("\"")) {

@@ -23,6 +23,7 @@ public class OutboxEventEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String nameTopic;
+    private String correlationId;
     @Column(columnDefinition = "TEXT")
     private String payload;
     @Enumerated(EnumType.STRING)

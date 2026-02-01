@@ -24,6 +24,7 @@ import com.SoftwareOrdersUberEats.authService.mapper.AuthMapper;
 import com.SoftwareOrdersUberEats.authService.mapper.RoleMapper;
 import com.SoftwareOrdersUberEats.authService.repository.AuthRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,8 +37,11 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.SoftwareOrdersUberEats.authService.constant.TracerConstants.*;
+
 @Service
 @AllArgsConstructor
+@Slf4j
 public class AuthService implements IAuth {
 
     private final AuthRepository authRepository;
@@ -46,6 +50,7 @@ public class AuthService implements IAuth {
     private final IRole iRoleService;
     private final PasswordEncoder passwordEncoder;
     private final OutboxEventService outboxEventService;
+    private final MappedDiagnosticService mappedDiagnosticService;
 
 
     @Override
@@ -97,6 +102,7 @@ public class AuthService implements IAuth {
         authEntity.setRoles(new ArrayList<>());
 
         authRepository.save(authEntity);
+        log.info(MESSAGE_SAVE_AUTH);
 
         DtoCreateUserEvent dataToCreateUser = authMapper.toDtoCreateUserEvent(request);
         dataToCreateUser.setId(authEntity.getId());
@@ -105,6 +111,7 @@ public class AuthService implements IAuth {
         DtoEvent<Object> event = DtoEvent.builder()
                 .data(dataToCreateUser)
                 .idEvent(UUID.randomUUID())
+                .correlationId(mappedDiagnosticService.getIdCorrelation())
                 .resultEvent(ResultEventEnum.CREATED)
                 .typeEvent(TypeEventEnum.CREATE).build();
 
@@ -134,21 +141,26 @@ public class AuthService implements IAuth {
         List<RoleEntity> rolesEntities = roleMapper.mapDtosToEntities(rolesDto);
         authEntity.setRoles(rolesEntities);
 
-        return authMapper.toDto(authRepository.save(authEntity));
+        authRepository.save(authEntity);
+        log.info(MESSAGE_UPDATE_AUTH);
+
+        return authMapper.toDto(authEntity);
     }
     @Override
     public void changeStatusUser(DtoCreateUserEvent data, ResultEventEnum status){
         AuthEntity auth = authRepository.findById(data.getId()).orElseThrow(AuthNotFoundException::new);
 
         if(status.equals(ResultEventEnum.VALIDATION_ERROR)){
+            log.info(MESSAGE_DATA_VALIDATION_CHANGE_STATUS_USER_ERROR);
             auth.setStatus(StatusResourceAuthEnum.VALIDATION_ERROR);
         }
 
         if(status.equals(ResultEventEnum.CREATED)){
             auth.setStatus(StatusResourceAuthEnum.ACTIVE);
-
         }
+
         authRepository.save(auth);
+        log.info(MESSAGE_CHANGE_STATUS_AUTH, auth.getId());
     }
 
     @Override
@@ -158,6 +170,7 @@ public class AuthService implements IAuth {
         DtoEvent<Object> event = DtoEvent.builder()
                 .data(request)
                 .idEvent(UUID.randomUUID())
+                .correlationId(mappedDiagnosticService.getIdCorrelation())
                 .resultEvent(ResultEventEnum.CREATED)
                 .typeEvent(TypeEventEnum.CREATE).build();
 

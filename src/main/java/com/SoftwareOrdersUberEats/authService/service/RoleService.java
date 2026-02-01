@@ -12,6 +12,7 @@ import com.SoftwareOrdersUberEats.authService.interfaces.IRole;
 import com.SoftwareOrdersUberEats.authService.mapper.RoleMapper;
 import com.SoftwareOrdersUberEats.authService.repository.RoleRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,17 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.SoftwareOrdersUberEats.authService.constant.TracerConstants.MESSAGE_SAVE_ROLE;
+import static com.SoftwareOrdersUberEats.authService.constant.TracerConstants.MESSAGE_UPDATE_ROLE;
+
 @Service
 @AllArgsConstructor
+@Slf4j
 public class RoleService implements IRole {
 
     private final RoleMapper roleMapper;
     private final RoleRepository roleRepository;
+    private final MappedDiagnosticService mappedDiagnosticService;
 
     private RoleEntity getRoleEntity(Long id){
         return roleRepository.findById(id).orElseThrow(RoleNotFoundException::new);
@@ -60,11 +66,15 @@ public class RoleService implements IRole {
         if(roleRepository.existsByName(request.name())){
             throw new RoleNameAlreadyInUseException();
         }
+
         RoleEntity role = roleMapper.toEntityFromCreateDto(request);
         role.setCreatedAt(Instant.now());
         role.setDisableAt( request.status().equals(StatusResourceRoleEnum.DELETE) ? Instant.now() : null);
 
-        return roleMapper.toDto(roleRepository.save(role));
+        roleRepository.save(role);
+        log.info(MESSAGE_SAVE_ROLE);
+
+        return roleMapper.toDto(role);
     }
 
     @Override
@@ -78,6 +88,9 @@ public class RoleService implements IRole {
         roleMapper.updateRoleFromDto(request,role);
         role.setDisableAt( role.getStatus().equals(StatusResourceRoleEnum.DISABLED) ? Instant.now() : null);
 
-        return roleMapper.toDto(roleRepository.save(role));
+        RoleEntity updatedRole = roleRepository.save(role);
+        log.info(MESSAGE_UPDATE_ROLE);
+
+        return roleMapper.toDto(updatedRole);
     }
 }
