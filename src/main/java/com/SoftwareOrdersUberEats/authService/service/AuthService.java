@@ -11,7 +11,7 @@ import com.SoftwareOrdersUberEats.authService.dto.role.DtoRole;
 import com.SoftwareOrdersUberEats.authService.dto.user.DtoCreateUser;
 import com.SoftwareOrdersUberEats.authService.entity.AuthEntity;
 import com.SoftwareOrdersUberEats.authService.entity.RoleEntity;
-import com.SoftwareOrdersUberEats.authService.enums.statesCreateResource.ResultEventEnum;
+import com.SoftwareOrdersUberEats.authService.enums.ResultEventEnum;
 import com.SoftwareOrdersUberEats.authService.enums.statesResource.StatusResourceAuthEnum;
 import com.SoftwareOrdersUberEats.authService.enums.typeEvents.TypeEventEnum;
 import com.SoftwareOrdersUberEats.authService.exception.auth.AuthEmailAlreadyInUseException;

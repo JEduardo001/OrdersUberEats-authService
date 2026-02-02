@@ -27,6 +27,7 @@ public class GlobalSecurity {
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(logFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
+                        //.requestMatchers("/actuator/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .build();

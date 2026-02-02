@@ -7,7 +7,7 @@ import com.SoftwareOrdersUberEats.authService.dto.auth.DtoUpdateAuth;
 import com.SoftwareOrdersUberEats.authService.dto.events.DtoCreateUserEvent;
 import com.SoftwareOrdersUberEats.authService.dto.order.DtoCreateOrder;
 import com.SoftwareOrdersUberEats.authService.dto.user.DtoCreateUser;
-import com.SoftwareOrdersUberEats.authService.enums.statesCreateResource.ResultEventEnum;
+import com.SoftwareOrdersUberEats.authService.enums.ResultEventEnum;
 import jakarta.transaction.Transactional;
 
 import java.util.UUID;

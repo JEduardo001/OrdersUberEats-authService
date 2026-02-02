@@ -1,4 +1,4 @@
-package com.SoftwareOrdersUberEats.authService.enums.statesCreateResource;
+package com.SoftwareOrdersUberEats.authService.enums;
 
 public enum ResultEventEnum {
     CREATED,

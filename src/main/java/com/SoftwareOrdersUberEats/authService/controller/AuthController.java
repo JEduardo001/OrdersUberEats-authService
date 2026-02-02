@@ -17,9 +17,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping( ApiBase.apiBase +"auth")
@@ -33,11 +37,15 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<DtoResponseApiLogin> login(@Valid @RequestBody DtoLogin request){
-        authenticationManager.authenticate(
+        Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
-        String token = jwtService.createToken(request.getUsername());
+        List<String> roles = authenticate.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        System.out.println("roles : " + roles);
+        String token = jwtService.createToken(request.getUsername(), roles);
 
         return ResponseEntity.status(HttpStatus.OK).body(DtoResponseApiLogin.builder()
                 .status(HttpStatus.OK.value())
@@ -78,7 +86,7 @@ public class AuthController {
         );
     }
 
-    @PostMapping("/{idAuth}")
+    @PutMapping("/{idAuth}")
     public ResponseEntity<DtoResponseApi> updateAuth(@PathVariable UUID idAuth, @Valid @RequestBody DtoUpdateAuth request){
         return ResponseEntity.status(HttpStatus.OK).body(DtoResponseApi.builder()
                 .status(HttpStatus.OK.value())

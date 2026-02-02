@@ -1,6 +1,5 @@
 package com.SoftwareOrdersUberEats.authService.interfaces;
 
 public interface IMappedDiagnostic {
-    void setIdCorrelation(String correlationId);
     String getIdCorrelation();
 }
