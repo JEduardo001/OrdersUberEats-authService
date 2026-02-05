@@ -21,6 +21,7 @@ public class RoleEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Enumerated(EnumType.STRING)
     private StatusResourceRoleEnum status;
     private Instant createdAt;
     private Instant disableAt;
