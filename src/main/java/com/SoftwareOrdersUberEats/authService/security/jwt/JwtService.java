@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.security.Key;
+import java.util.List;
 
 @Service
 public class JwtService {
@@ -17,10 +18,11 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
 
-    public String createToken(String username){
+    public String createToken(String username, List<String> roles){
         return Jwts.builder()
                 .signWith(getSecret(), SignatureAlgorithm.HS256)
                 .setIssuedAt(new Date())
+                .claim("roles", roles)
                 .setExpiration(new Date(System.currentTimeMillis() + 60000 * 300)) //  hours
                 .setSubject(username)
                 .compact();

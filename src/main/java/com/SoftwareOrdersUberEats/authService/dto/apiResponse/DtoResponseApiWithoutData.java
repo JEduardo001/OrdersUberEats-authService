@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 public class DtoResponseApiWithoutData {
     Integer status;
     String message;
+    String correlationId;
 }
 

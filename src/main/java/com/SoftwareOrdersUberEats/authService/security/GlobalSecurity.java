@@ -1,5 +1,6 @@
 package com.SoftwareOrdersUberEats.authService.security;
 
+import com.SoftwareOrdersUberEats.authService.security.filters.LogFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,12 +19,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @AllArgsConstructor
 public class GlobalSecurity {
 
+    private LogFilter logFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+                .addFilterBefore(logFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
+                        //.requestMatchers("/actuator/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .build();

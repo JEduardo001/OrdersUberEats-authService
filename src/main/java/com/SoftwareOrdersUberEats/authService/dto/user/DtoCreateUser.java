@@ -1,6 +1,5 @@
 package com.SoftwareOrdersUberEats.authService.dto.user;
 
-import com.SoftwareOrdersUberEats.authService.enums.StatusResourceAuth;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Builder
