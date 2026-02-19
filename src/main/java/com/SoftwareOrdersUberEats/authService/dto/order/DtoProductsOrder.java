@@ -13,9 +13,6 @@ import java.util.UUID;
 @Builder
 @Data
 public class DtoProductsOrder {
-
     private UUID idProduct;
     private Integer quantityProducts;
-    private Instant createAt;
-    private Instant deleteAt;
 }

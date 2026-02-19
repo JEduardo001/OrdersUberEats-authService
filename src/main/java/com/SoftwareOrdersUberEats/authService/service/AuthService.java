@@ -173,8 +173,9 @@ public class AuthService implements IAuth {
                 .idEvent(UUID.randomUUID())
                 .correlationId(mappedDiagnosticService.getIdCorrelation())
                 .resultEvent(ResultEventEnum.CREATED)
+                .createAt(Instant.now())
                 .typeEvent(TypeEventEnum.CREATE).build();
 
-        outboxEventService.saveEvent(event, "order.requested");
+        outboxEventService.saveEvent(event, "dev.auth-ms.order-requested.v1");
     }
 }

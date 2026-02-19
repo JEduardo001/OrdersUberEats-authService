@@ -15,6 +15,8 @@ import java.util.UUID;
 @Data
 public class DtoCreateOrder {
     @NotNull
+    private UUID idOrder;
+    @NotNull
     private UUID idUser;
     @NotNull
     private List<DtoProductsOrder> products;
