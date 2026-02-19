@@ -27,7 +27,7 @@ public class Producer {
     }
 
     public void publisFailedSendEventDlq(String request) {
-        kafkaTemplate.send("failed.send.event.dlq", request);
+        kafkaTemplate.send("dev.auth-ms.failed-send-event-dlq.v1", request);
     }
 
 }

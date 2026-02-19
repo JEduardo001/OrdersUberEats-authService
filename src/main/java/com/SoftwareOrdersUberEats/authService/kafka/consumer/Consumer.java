@@ -21,8 +21,8 @@ public class Consumer implements IConsumer {
     private final ObjectMapper objectMapper;
 
     @KafkaListener(
-            topics = "creating.user.response",
-            groupId = "users"    )
+            topics = "dev.user-ms.user-created.v1",
+            groupId = "user-ms.user-created")
     @Override
     public void responseCreateUser(String rawEvent,@Header(CORRELATION_HEADER) String correlationId) {
 
@@ -33,7 +33,7 @@ public class Consumer implements IConsumer {
 
         DtoEvent<DtoCreateUserEvent> dto = objectMapper.readValue(
                 json,
-                new TypeReference<DtoEvent<DtoCreateUserEvent>>() {}
+                new TypeReference<>() {}
         );
 
         DtoCreateUserEvent user = objectMapper.convertValue(dto.getData(), DtoCreateUserEvent.class);

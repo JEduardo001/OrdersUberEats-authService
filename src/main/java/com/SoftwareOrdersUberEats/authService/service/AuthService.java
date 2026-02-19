@@ -115,7 +115,8 @@ public class AuthService implements IAuth {
                 .resultEvent(ResultEventEnum.CREATED)
                 .typeEvent(TypeEventEnum.CREATE).build();
 
-        outboxEventService.saveEvent(event, "creating.user");
+
+        outboxEventService.saveEvent(event, "dev.auth-ms.create-user.v1");
 
         return authMapper.toDto(authEntity);
     }
