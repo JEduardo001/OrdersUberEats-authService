@@ -20,7 +20,7 @@ import static com.SoftwareOrdersUberEats.authService.constant.TracerConstants.*;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class OutboxEventService {
+public class OutboxEventService  {
 
     private final OutboxEventRepository outboxEventRepository;
     private final Producer producer;

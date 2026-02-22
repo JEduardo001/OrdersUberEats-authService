@@ -8,6 +8,7 @@ import com.SoftwareOrdersUberEats.authService.dto.auth.DtoLogin;
 import com.SoftwareOrdersUberEats.authService.dto.auth.DtoUpdateAuth;
 import com.SoftwareOrdersUberEats.authService.dto.order.DtoCreateOrder;
 import com.SoftwareOrdersUberEats.authService.dto.user.DtoCreateUser;
+import com.SoftwareOrdersUberEats.authService.interfaces.IAuth;
 import com.SoftwareOrdersUberEats.authService.security.jwt.JwtService;
 import com.SoftwareOrdersUberEats.authService.service.AuthService;
 import com.SoftwareOrdersUberEats.authService.service.MappedDiagnosticService;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final AuthService authService;
+    private final IAuth authService;
     private final JwtService jwtService;
     private final MappedDiagnosticService mappedDiagnosticService;
 

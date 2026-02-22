@@ -11,6 +11,7 @@ import com.SoftwareOrdersUberEats.authService.exception.role.RoleNotFoundExcepti
 import com.SoftwareOrdersUberEats.authService.interfaces.IRole;
 import com.SoftwareOrdersUberEats.authService.mapper.RoleMapper;
 import com.SoftwareOrdersUberEats.authService.repository.RoleRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

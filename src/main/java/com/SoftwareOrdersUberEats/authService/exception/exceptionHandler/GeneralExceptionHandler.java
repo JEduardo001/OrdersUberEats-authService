@@ -1,7 +1,9 @@
 package com.SoftwareOrdersUberEats.authService.exception.exceptionHandler;
 
 import com.SoftwareOrdersUberEats.authService.dto.apiResponse.DtoResponseApiWithoutData;
+import com.SoftwareOrdersUberEats.authService.exception.infrestructure.InfrastructureUnavailableException;
 import com.SoftwareOrdersUberEats.authService.service.MappedDiagnosticService;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import javax.naming.ServiceUnavailableException;
 
 import static com.SoftwareOrdersUberEats.authService.constant.TracerConstants.CORRELATION_KEY;
 
@@ -55,6 +59,16 @@ public class GeneralExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<DtoResponseApiWithoutData> handleHttpMessageNotReadable(HttpMessageNotReadableException ex){
         return buildResponse(HttpStatus.BAD_REQUEST, "Malformed JSON request",ex);
+    }
+
+    @ExceptionHandler(CallNotPermittedException.class)
+    public ResponseEntity<DtoResponseApiWithoutData> CallNotPermittedException(CallNotPermittedException ex){
+        return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, "service not available", ex);
+    }
+
+    @ExceptionHandler(InfrastructureUnavailableException.class)
+    public ResponseEntity<DtoResponseApiWithoutData> InfrastructureUnavailableException(InfrastructureUnavailableException ex){
+        return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), ex);
     }
 
     // Catch-all

@@ -64,6 +64,7 @@ public class AuthService implements IAuth {
                 listAuths
         );
     }
+
     @Override
     public DtoAuthSecurity getByUsername(String username){
         Optional<AuthEntity> auth = authRepository.findByUsername(username);
